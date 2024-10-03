@@ -34,7 +34,9 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Supporting Files/Info.plist",
+				"Tests/To-Do ListTests/AddToDoItemViewModelTests.swift",
 				"Tests/To-Do ListTests/To_Do_ListTests.swift",
+				"Tests/To-Do ListTests/ToDoListViewModelTests.swift",
 				"Tests/To-Do ListUITests/To_Do_ListUITests.swift",
 				"Tests/To-Do ListUITests/To_Do_ListUITestsLaunchTests.swift",
 			);
@@ -43,7 +45,9 @@
 		D82AA9552C9C462500E98404 /* Exceptions for "To-Do List" folder in "To-Do ListTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				"Tests/To-Do ListTests/AddToDoItemViewModelTests.swift",
 				"Tests/To-Do ListTests/To_Do_ListTests.swift",
+				"Tests/To-Do ListTests/ToDoListViewModelTests.swift",
 			);
 			target = D82AA9292C9C42F700E98404 /* To-Do ListTests */;
 		};

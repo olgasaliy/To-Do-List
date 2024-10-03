@@ -39,8 +39,8 @@ class ToDoListViewModel {
     
     func removeItem(at index: Int, completionWithSuccess: (Bool) -> Void) {
         guard index >= 0 && index < tasks.count else {
-            completionWithSuccess(false)
             delegate?.displayError(nil, with: "Index \(index) is out of bounds")
+            completionWithSuccess(false)
             return
         }
         
@@ -52,22 +52,22 @@ class ToDoListViewModel {
             tasks.remove(at: index)
             completionWithSuccess(true)
         } catch {
-            completionWithSuccess(false)
             delegate?.displayError(error, with: "Failed to remove item")
+            completionWithSuccess(false)
         }
     }
     
     func completeToDoItem(at index: Int, completionWithSuccess: (Bool) -> Void) {
         guard index >= 0 && index < tasks.count else {
-            completionWithSuccess(false)
             delegate?.displayError(nil, with: "Index \(index) is out of bounds")
+            completionWithSuccess(false)
             return
         }
         
         let itemToComplete = tasks[index]
         guard !itemToComplete.isCompleted else {
-            completionWithSuccess(false)
             delegate?.displayError(nil, with: "To Do Item is already completed.")
+            completionWithSuccess(false)
             return
         }
         
@@ -78,8 +78,8 @@ class ToDoListViewModel {
             tasks.remove(at: index)
             completionWithSuccess(true)
         } catch {
-            completionWithSuccess(false)
             delegate?.displayError(error, with: "Failed to complete the item")
+            completionWithSuccess(false)
         }
     }
     

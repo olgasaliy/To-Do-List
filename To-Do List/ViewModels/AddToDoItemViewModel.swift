@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-enum DisplayMode {
+enum DisplayMode: Equatable {
     case edit
     case add
 }
@@ -85,7 +85,7 @@ class AddToDoItemViewModel {
         delegate?.didMakeAnyChanges()
     }
     
-    func saveToDoItem(completionHandler: @escaping () -> Void) {
+    func saveToDoItem(completionHandler: () -> Void) {
         guard validateAllInputs() else { return }
         
         do {

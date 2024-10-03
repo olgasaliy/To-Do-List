@@ -33,8 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Core Data stack
 
     lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "To_Do_List") // Your .xcdatamodeld file name
-        // Load any persistent stores, which creates a store if none exists.
+        let container = NSPersistentContainer(name: "To_Do_List")
         container.loadPersistentStores { storeDescription, error in
             if let error {
                 fatalError("Failed to load persistent stores: \(error.localizedDescription)")
