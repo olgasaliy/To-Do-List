@@ -27,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Get the ToDoListViewController from the navigation controller
         if let toDoListViewController = navController?.topViewController as? ToDoListViewController {
             // Inject the ToDoManager into the ToDoListViewController
-            toDoListViewController.toDoManager = ToDoListViewModel(with: context)
+            toDoListViewController.viewModel = ToDoListViewModel(with: context)
         }
         
         // Set the window's root view controller and make it visible

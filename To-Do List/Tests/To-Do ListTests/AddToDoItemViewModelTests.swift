@@ -35,6 +35,7 @@ final class AddToDoItemViewModelTests: XCTestCase {
     var mockDelegate: AddToDoItemMockDelegate!
     
     override func setUpWithError() throws {
+        try super.setUpWithError()
         mockContext = NSPersistentContainer.setUpInMemoryManagedObjectContext()
         mockDelegate = AddToDoItemMockDelegate()
     }
@@ -43,7 +44,7 @@ final class AddToDoItemViewModelTests: XCTestCase {
         mockContext = nil
         viewModel = nil
         mockDelegate = nil
-        super.tearDown()
+        try super.tearDownWithError()
     }
 
     func testInitWithAddMode() {

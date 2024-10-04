@@ -30,6 +30,7 @@ final class ToDoListViewModelTests: XCTestCase {
     var mockDelegate: MockToDoManagerDelegate!
     
     override func setUpWithError() throws {
+        try super.setUpWithError()
         mockContext = NSPersistentContainer.setUpInMemoryManagedObjectContext()
         viewModel = ToDoListViewModel(with: mockContext)
         mockDelegate = MockToDoManagerDelegate()
@@ -40,6 +41,7 @@ final class ToDoListViewModelTests: XCTestCase {
         viewModel = nil
         mockContext = nil
         mockDelegate = nil
+        try super.tearDownWithError()
     }
 
    func testFetchToDoItems_Success() {

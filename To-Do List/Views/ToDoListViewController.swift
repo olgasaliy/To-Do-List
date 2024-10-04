@@ -15,27 +15,23 @@ class ToDoListViewController: UITableViewController, ErrorHandling {
         // Add other segue identifiers here as needed
     }
     
-    var toDoManager: ToDoListViewModel!
+    var viewModel: ToDoListViewModel!
     private var selectedItemIndex: IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        guard toDoManager != nil else {
-            fatalError("ToDoManager is not set")
-        }
-        
-        toDoManager.delegate = self
-        toDoManager.fetchToDoItems()
+        viewModel.delegate = self
+        viewModel.fetchToDoItems()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        toDoManager.tasks.count
+        viewModel.tasks.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        let task = toDoManager.tasks[indexPath.row]
+        let task = viewModel.tasks[indexPath.row]
         if let toDoItemCell = cell as? ToDoItemCell {
             toDoItemCell.configure(with: task)
         } else {
@@ -46,7 +42,7 @@ class ToDoListViewController: UITableViewController, ErrorHandling {
     
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (action, view, completionHandler) in
-            self?.toDoManager.removeItem(at: indexPath.row) { success in
+            self?.viewModel.removeItem(at: indexPath.row) { success in
                 if success {
                     tableView.deleteRows(at: [indexPath], with: .automatic)
                 }
@@ -64,7 +60,7 @@ class ToDoListViewController: UITableViewController, ErrorHandling {
     
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let completeAction = UIContextualAction(style: .normal, title: "Complete") { [weak self] (action, view, completionHandler) in
-            self?.toDoManager.completeToDoItem(at: indexPath.row) { [weak self] success in
+            self?.viewModel.completeToDoItem(at: indexPath.row) { [weak self] success in
                 if success {
                     self?.animateCellBeforeRemoval(at: indexPath)
                 }
@@ -93,15 +89,15 @@ class ToDoListViewController: UITableViewController, ErrorHandling {
             if let navController = segue.destination as? UINavigationController,
                let addToDoItemVC = navController.topViewController as? AddToDoItemViewController {
                 addToDoItemVC.delegate = self
-                addToDoItemVC.viewModel = AddToDoItemViewModel(with: toDoManager.context)
+                addToDoItemVC.viewModel = AddToDoItemViewModel(with: viewModel.context)
             }
 
         case .showTaskDetail:
             if let detailsItemVC = segue.destination as? AddToDoItemViewController,
                let selectedItemIndex = selectedItemIndex?.row {
                 detailsItemVC.delegate = self
-                detailsItemVC.viewModel = AddToDoItemViewModel(with: toDoManager.context,
-                                                               task: toDoManager.tasks[selectedItemIndex])
+                detailsItemVC.viewModel = AddToDoItemViewModel(with: viewModel.context,
+                                                               task: viewModel.tasks[selectedItemIndex])
                 detailsItemVC.tableView.reloadData()
             }
         }
@@ -131,7 +127,7 @@ extension ToDoListViewController: ToDoManagerDelegate {
 extension ToDoListViewController: AddToDoItemDelegate {
     
     func didAddNewToDoItem() {
-        toDoManager.fetchToDoItems()
+        viewModel.fetchToDoItems()
         tableView.reloadData()
     }
     
