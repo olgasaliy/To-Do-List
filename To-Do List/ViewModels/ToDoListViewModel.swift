@@ -23,17 +23,21 @@ class ToDoListViewModel {
     }
     
     func fetchToDoItems() {
-        let fetchRequest: NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()
-        let sortDescriptor = NSSortDescriptor(keyPath: \ToDoItem.priority, ascending: true)
-//        let predicate = NSPredicate(format: "isCompleted == %@", NSNumber(value: false))
-//        fetchRequest.predicate = predicate
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        do {
-            tasks = try context.fetch(fetchRequest)
-            delegate?.didUpdateToDoItems()
-        } catch {
-            delegate?.displayError(error, with: "Failed to fetch tasks")   
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self = self else { return }
+            let fetchRequest: NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()
+            let sortDescriptor = NSSortDescriptor(keyPath: \ToDoItem.priority, ascending: true)
+            fetchRequest.sortDescriptors = [sortDescriptor]
+            
+            do {
+                let fetchedTasks = try context.fetch(fetchRequest)
+                DispatchQueue.main.async {
+                    self.tasks = fetchedTasks
+                    self.delegate?.didUpdateToDoItems()
+                }
+            } catch {
+                delegate?.displayError(error, with: "Failed to fetch tasks")
+            }
         }
     }
     

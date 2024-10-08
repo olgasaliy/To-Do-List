@@ -64,15 +64,22 @@ final class ToDoListViewControllerTests: XCTestCase {
     }
 
     func testTableViewDataSource() {
+        let expectation = self.expectation(description: "Fetching is completed")
+        
         let mockTask1 = ToDoItem(context: context)
         mockTask1.title = "Task 1"
         let mockTask2 = ToDoItem(context: context)
         mockTask2.title = "Task 2"
         try? context.save()
         viewModel.fetchToDoItems()
-        mockTableView.reloadData()
         
-        XCTAssertEqual(viewController.tableView.numberOfRows(inSection: 0), 2)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.mockTableView.reloadData()
+            XCTAssertEqual(self.viewController.tableView.numberOfRows(inSection: 0), 2)
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 1.0, handler: nil)
     }
     
     func testSwipeToDeleteAction() {

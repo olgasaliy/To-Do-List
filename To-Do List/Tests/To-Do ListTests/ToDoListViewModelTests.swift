@@ -43,21 +43,35 @@ final class ToDoListViewModelTests: XCTestCase {
         mockDelegate = nil
         try super.tearDownWithError()
     }
-
-   func testFetchToDoItems_Success() {
-       let task1 = ToDoItem(context: mockContext)
-       task1.title = "Test1"
-       task1.isCompleted = false
-       task1.taskPriority = .high
-       try? mockContext.save()
-       
-       viewModel.fetchToDoItems()
-       
-       XCTAssertEqual(viewModel.tasks.count, 1)
-       XCTAssertTrue(mockDelegate.didUpdateItemsCalled)
+    
+    func testFetchToDoItems_Success() {
+        let expectation = self.expectation(description: "FetchToDoItems completes")
+        
+        let task1 = ToDoItem(context: mockContext)
+        task1.title = "Test1"
+        task1.isCompleted = false
+        task1.taskPriority = .high
+        try? mockContext.save()
+        
+        viewModel.fetchToDoItems()
+        
+        // Wait for the asynchronous call to complete
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            // Perform assertions after the async operation completes
+            XCTAssertEqual(self.viewModel.tasks.count, 1)
+            XCTAssertTrue(self.mockDelegate.didUpdateItemsCalled)
+            
+            // Fulfill the expectation
+            expectation.fulfill()
+        }
+        
+        // Wait for expectations with a timeout
+        waitForExpectations(timeout: 1.0, handler: nil)
     }
     
     func testRemoveItem_Success() {
+        let expectation = self.expectation(description: "FetchToDoItems completes")
+
         let task1 = ToDoItem(context: mockContext)
         task1.title = "Test1"
         task1.isCompleted = false
@@ -65,11 +79,17 @@ final class ToDoListViewModelTests: XCTestCase {
         try? mockContext.save()
         viewModel.fetchToDoItems()
         
-        viewModel.removeItem(at: 0) { result in
-            XCTAssertTrue(result)
-            XCTAssertEqual(viewModel.tasks.count, 0)
-            XCTAssertTrue(mockDelegate.didUpdateItemsCalled)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.viewModel.removeItem(at: 0) { result in
+                XCTAssertTrue(result)
+                XCTAssertEqual(self.viewModel.tasks.count, 0)
+                XCTAssertTrue(self.mockDelegate.didUpdateItemsCalled)
+                
+                expectation.fulfill()
+            }
         }
+        
+        waitForExpectations(timeout: 1.0, handler: nil)
      }
 
     func testRemoveItem_Failure() {
@@ -83,6 +103,8 @@ final class ToDoListViewModelTests: XCTestCase {
      }
     
     func testCompleteToDoItem_Success() {
+        let expectation = self.expectation(description: "FetchToDoItems completes")
+        
         let task1 = ToDoItem(context: mockContext)
         task1.title = "Test1"
         task1.isCompleted = false
@@ -90,11 +112,17 @@ final class ToDoListViewModelTests: XCTestCase {
         try? mockContext.save()
         viewModel.fetchToDoItems()
         
-        viewModel.completeToDoItem(at: 0) { success in
-            XCTAssertTrue(success)
-            XCTAssertTrue(task1.isCompleted)
-            XCTAssertTrue(mockDelegate.didUpdateItemsCalled)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.viewModel.completeToDoItem(at: 0) { success in
+                XCTAssertTrue(success)
+                XCTAssertTrue(task1.isCompleted)
+                XCTAssertTrue(self.mockDelegate.didUpdateItemsCalled)
+                
+                expectation.fulfill()
+            }
         }
+        
+        waitForExpectations(timeout: 1.0, handler: nil)
     }
     
     func testCompleteToDoItem_AlreadyCompleted() {
